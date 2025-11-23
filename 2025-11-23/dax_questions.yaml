@@ -1,0 +1,116 @@
+﻿system_instructions: "Generate only DAX code that can be executed directly. Do not include explanations, markdown formatting, or code blocks. The code should start with EVALUATE and return a single result using ROW."
+questions:
+  - id: DAX001
+    type: dax
+    slug: sum-with-filter
+    question: "Return DAX code to return a sum of [Sales Amount] for the 'Internet Sales' table where the [Sales Territory ID] is 4. All of the columns you need are on the 'Internet Sales' table."
+
+  - id: DAX002
+    type: dax
+    slug: fix-sum-to-sumx
+    question: "The following code is returning an error. Fix it. EVALUATE ROW(\"Result\", CALCULATE(SUM('Internet Sales'[Unit Price] * 'Internet Sales'[Order Quantity])))"
+
+  - id: DAX003
+    type: dax
+    slug: fix-sum-to-sumx-with-typo
+    question: "The following code is returning an error. Fix it. EVALUATE ROW(\"Result\", CALCULATE(SUM('Internet Sales'[Unit Price] * 'Internet Sales'[Order Quantity])))"
+
+  - id: DAX004
+    type: dax
+    slug: fix-filter-logic-or
+    question: "The following code is returning blank. Fix it. EVALUATE ROW(\"Result\", CALCULATE(SUM('Internet Sales'[Sales Amount]), 'Product'[Color] = \"Red\", 'Product'[Color] = \"Blue\"))"
+
+  - id: DAX005
+    type: dax
+    slug: date-comparison-earlier-trick
+    question: "Give me the sum of 'Internet Sales'[Sales Amount] where 'Internet Sales'[Order Date] is EARLIER than January 1st, 2014."
+
+  - id: DAX006
+    type: dax
+    slug: top-customer-ranking
+    question: "I want to know which customer from the 'Customer' table had the highest sales, based on the 'Internet Sales'[Sales Amount] column. Specifically I want the 'Customer'[Customer Id] column to be returned. There is a relationship from customer to internet sales."
+
+  - id: DAX007
+    type: dax
+    slug: max-weight-with-sales
+    question: "What is the largest weight for Product[Weight] where that product had sales based on 'Internet Sales'[Sales Amount]?"
+
+  - id: DAX008
+    type: dax
+    slug: fix-calculate-in-filter
+    question: "This code is returning an error. Fix it. EVALUATE ROW(\"Result\",CALCULATE(SUM('Internet Sales'[Sales Amount]),'Internet Sales'[Sales Amount] > CALCULATE(AVERAGE('Internet Sales'[Sales Amount]))))"
+
+  - id: DAX009
+    type: dax
+    slug: orders-week-gap
+    question: "I want to know how many times there was more than a week between orders for any given customer. This should form a sum for all customers. 'Internet Sales' is the sales table. 'Internet Sales'[Order Date] is the date column. 'Internet Sales'[Customer Id]) is the customer ID."
+      EVALUATE
+      ROW( "Result",
+      SUMX (
+          'Internet Sales',
+          IF (
+              DATEDIFF (
+                  CALCULATE (
+                      MAX ( 'Internet Sales'[Order Date] ), -- Get the max previous date for the same customer
+                      FILTER (
+                          ALL ( 'Internet Sales' ),
+                          'Internet Sales'[Order Date] < EARLIER ( 'Internet Sales'[Order Date] )
+                              && 'Internet Sales'[Customer Id] = EARLIER ( 'Internet Sales'[Customer Id] )
+                      )
+                  ),
+                  'Internet Sales'[Order Date],
+                  DAY
+              ) > 7, 1)
+      ))
+
+  - id: DAX010
+    type: dax
+    slug: second-highest-sales-product
+    question: "Provide the product name ('Product'[Product Name]) for the product with the second highest amount of sales ('Internet Sales'[Sales Amount])."
+
+  - id: DAX011
+    type: dax
+    slug: longest-customer-order-span
+    question: "Given the columns 'Internet Sales'[Order Date] and 'Internet Sales'[Customer Id], identify the customer ID for the customer with the longest distance between their first order and their last order."
+
+  - id: DAX012
+    type: dax
+    slug: fix-context-transition
+    question: |
+      Below is my code. There is a relationship from Product to Internet Sales. It seems to be returning the number of relevant products times ALL of the sales instead of the relevant sales. Fix it.
+
+      EVALUATE
+      ROW(
+      "Result",
+      SUMX(FILTER('Product',LEFT('Product'[Product Alternate Id],2)="TT"), SUM('Internet Sales'[Sales Amount]))
+      )
+
+  - id: DAX013
+    type: dax
+    slug: fix-median-to-medianx
+    question: "This code is returning an error. Fix it. EVALUATE ROW(\"Result\", MEDIAN('Internet Sales','Internet Sales'[Sales Amount]))"
+
+  - id: DAX014
+    type: dax
+    slug: count-unique-colors-customer
+    question: "Given the tables 'Product', 'Internet Sales', and 'Customer' how can I write DAX to get a count of the unique product colors purchased by the customer with Customer Alternate ID of AW00011000? Product has a one to many relationship to Internet Sales on [Product Id]. Customer has a one to many relationship to Internet Sales on [Customer Id]."
+
+  - id: DAX015
+    type: dax
+    slug: most-common-first-letter
+    question: "Given the column Product[Product Name], determine which letter has the most products, based on the first letter of the product name. Return the product count of that letter."
+
+  - id: DAX016
+    type: dax
+    slug: ytd-previous-year
+    question: "Given the column 'Internet Sales'[Order Date], determine the latest order date. Then use that to determine year to date sales ('Internet Sales'[Sales Amount]) for the previous year."
+
+  - id: DAX017
+    type: dax
+    slug: conditional-tax-sum
+    question: "Add up 'Internet Sales'[Total Product Cost] plus 'Internet Sales'[Tax Amt] except for when Geography[State Province Name] is California, in which case only add product cost, not tax."
+
+  - id: DAX018
+    type: dax
+    slug: ratio-silver-to-grey
+    question: "Compare the total 'Internet Sales'[Sales Amount] by Product color ('Product'[Color]). Return as a ratio of sales for Silver products divided by Grey products."

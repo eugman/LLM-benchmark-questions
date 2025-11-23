@@ -1,0 +1,133 @@
+﻿system_instructions: "Respond only with the correct letter, do not elaborate."
+questions:
+  - id: Q001
+    type: multiple_choice
+    slug: disable-implicit-measures
+    question: "Which feature in DAX requires completely turning off implicit measures in order to function at all?"
+    choices:
+      - id: A
+        text: "Conditional formatting"
+      - id: B
+        text: "What-if Parameters"
+      - id: C
+        text: "Visual Calculations"
+      - id: D
+        text: "Calculation Groups"
+      - id: E
+        text: "None of the above"
+    references:
+      - "https://learn.microsoft.com/en-us/power-bi/transform-model/calculation-groups#add-a-new-calculation-group"
+
+  - id: Q002
+    type: multiple_choice
+    slug: disable-implicit-measures-none
+    question: "Which feature in DAX requires completely turning off implicit measures in order to function at all?"
+    choices:
+      - id: A
+        text: "Conditional formatting"
+      - id: B
+        text: "What-if Parameters"
+      - id: C
+        text: "Visual Calculations"
+      - id: D
+        text: "User Defined Functions"
+      - id: E
+        text: "None of the above"
+    references:
+      - "https://learn.microsoft.com/en-us/power-bi/transform-model/calculation-groups#add-a-new-calculation-group"
+      - "https://learn.microsoft.com/en-us/power-bi/create-reports/power-bi-field-parameters#limitations"
+
+  - id: Q003
+    type: multiple_choice
+    slug: context-transition
+    question: "Which of the following will perform a context transition in DAX?"
+    choices:
+      - id: A
+        text: "AVERAGEX(Customer, CALCULATE(SUM(Sales[Total])))"
+      - id: B
+        text: "AVERAGEX(Customer, [Total Sales])"
+      - id: C
+        text: "AVERAGEX(Customer, SUMX(RELATEDTABLE(Sales), Sales[Total]))"
+      - id: D
+        text: "All of the above"
+      - id: E
+        text: "None of the above"
+
+  - id: Q004
+    type: multiple_choice
+    slug: avoid-implicit-measures
+    question: "Which of the following is a reason to avoid using implicit measures in Power BI?"
+    choices:
+      - id: A
+        text: "It significantly increases the size of the data stored in the model"
+      - id: B
+        text: "You have no control over the summarization method for a column"
+      - id: C
+        text: "Implicit measures are slower than their explicit counterpart"
+      - id: D
+        text: "Implicit measures may return error messages that equivalent explicit measures won't"
+      - id: E
+        text: "None of the above"
+
+  - id: Q005
+    type: multiple_choice
+    slug: sum-vs-sumx-performance
+    question: "Which has better performance SUM(Sales[Total]) or SUMX(Sales, Sales[Total])?"
+    choices:
+      - id: A
+        text: "SUM(Sales[Total])"
+      - id: B
+        text: "SUMX(Sales, Sales[Total])"
+      - id: C
+        text: "It depends on the data distribution"
+      - id: D
+        text: "They are always identical in performance"
+      - id: E
+        text: "None of the above"
+    references:
+      - "https://dax.guide/sum/"
+      - "https://www.sqlgene.com/2025/03/21/sum-and-sumx-often-have-identical-performance/"
+  - id: Q006
+    type: multiple_choice
+    slug: calculate-filter-order
+    question: "Which filter will be applied if I run the following DAX code? CALCULATE( CALCULATE( [Total Sales], Sales[color] = \"Red\"), Sales[color] = \"Blue\")"
+    choices:
+      - id: A
+        text: "Blue"
+      - id: B
+        text: "Red"
+      - id: C
+        text: "Both"
+      - id: D
+        text: "Neither"
+      - id: E
+        text: "It will cause an error"
+    references:
+      - "https://www.sqlbi.com/articles/order-of-evaluation-in-calculate-parameters/"
+  - id: Q007
+    type: multiple_choice
+    slug: m-code-column-name-syntax
+    question: |
+      "Given this M code, which part causes the error?
+      
+      let
+      Source = Sql.Databases("localhost"),
+      AdventureWorks2019 = Source{[Name="AdventureWorks2019"]}[Data],
+      Sales_SalesOrderHeader = AdventureWorks2019{[Schema="Sales",Item="SalesOrderHeader"]}[Data],
+      #"Removed Other Columns" = Table.SelectColumns(Sales_SalesOrderHeader,{"OrderDate"}),
+      #"Renamed Columns" = Table.RenameColumns(#"Removed Other Columns",{{"OrderDate", "Order-Date"}}),
+      #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Date Only", each Date.From([Order-Date]))
+      in
+      #"Added Custom"
+      "
+    choices:
+      - id: A
+        text: "Date.From"
+      - id: B
+        text: "OrderDate likely has bad data"
+      - id: C
+        text: "There is a typo"
+      - id: D
+        text: "[Order-Date] is invalid syntax"
+      - id: E
+        text: "None of the above"
